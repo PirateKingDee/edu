@@ -12,47 +12,69 @@ public class DijkstrasSP implements ShortestPath{
 	ArrayList<Vertex> reachable;
 	ArrayList<Integer> distance;
 	ArrayList<Vertex> visited;
-	HashMap<Vertex, LinkedList<LinkedList<Integer>>> neighbor;
+	HashMap<Vertex, LinkedList<Edge>> neighbor;
+	HashMap<Vertex, Edge> pathTo;
 	Graph graph;
-	int shortestDistance;
 	public DijkstrasSP(){
 		reachable = new ArrayList<Vertex>();
 		distance = new ArrayList<Integer>();
 		visited = new ArrayList<Vertex>();
-		neighbor = new HashMap<Vertex, LinkedList<LinkedList<Integer>>>();
+		neighbor = new HashMap<Vertex, LinkedList<Edge>>();
+		pathTo = new HashMap<Vertex, Edge>();
 	}
 	public List<Edge> genShortestPath(Graph G, Vertex source, Vertex goal){
 		this.graph = G;
 		setInitialDistance();
 		setupNeighbor();
 		distance.set(source.getId(), 0);
+		heapify(reachable, distance);
 		Vertex visitingVertex = source;
 		visited.add(visitingVertex);
-		shortestDistance = 0;
-		heapify(reachable, distance);
+		// distance.remove(0);
+		// reachable.remove(0);
+		// System.out.println(distance);
+		// System.out.println(reachable);
 		while(visitingVertex != goal){
-			// ListIterator<LinkedList<Integer>> neighborList = neighbor.get(visitingVertex).listIterator();
-			// while(neighborList.hasNext()){
-			// 	LinkedList<Integer> nextNeighbor = neighborList.next();
-			// 	Integer cost = nextNeighbor.getLast();
-			// 	Vertex neighborVertex = graph.getvList().get(nextNeighbor.getFirst());
-			// 	int newCost = distance.get(visitingVertex.getId())+cost;
-			// 	if(distance.get(neighborVertex.getId())!=Integer.MAX_VALUE){
-			//
-			// 		if(newCost < distance.get(neighborVertex.getId())){
-			// 			distance.set(neighborVertex.getId(), newCost);
-			// 		}
-			// 	}
-			// 	else{
-			// 		distance.set(neighborVertex.getId(), newCost);
-			//
-			// 	}
-			// }
-			System.out.println(distance);
-			System.out.println(reachable);
-			break;
+			ListIterator<Edge> neighborList = neighbor.get(visitingVertex).listIterator();
+			while(neighborList.hasNext()){
+				Edge neighborEdge = neighborList.next();
+				Integer cost = neighborEdge.getWeight();
+				Vertex neighborVertex = neighborEdge.getTwo();
+				if(visited.contains(neighborVertex)){
+					continue;
+				}
+				int newCost = distance.get(reachable.indexOf(visitingVertex))+cost;
+				if(distance.get(reachable.indexOf(neighborVertex))!=Integer.MAX_VALUE){
+
+					if(newCost < distance.get(reachable.indexOf(neighborVertex))){
+						distance.set(reachable.indexOf(neighborVertex), newCost);
+						pathTo.replace(neighborVertex, neighborEdge);
+					}
+				}
+				else{
+					distance.set(reachable.indexOf(neighborVertex), newCost);
+					pathTo.put(neighborVertex, neighborEdge);
+				}
+			}
+			distance.remove(0);
+			reachable.remove(0);
+			heapify(reachable, distance);
+			visitingVertex = reachable.get(0);
+			visited.add(visitingVertex);
+			// System.out.println(distance);
+			// System.out.println(reachable);
+			// break;
 		}
-		return null;
+		LinkedList<Edge> SPT = new LinkedList<Edge>();
+		SPT.add(pathTo.get(goal));
+		while(SPT.getFirst().getOne().equals(source)==false){
+			SPT.addFirst(pathTo.get(SPT.getFirst().getOne()));
+		}
+		// System.out.println(distance);
+		// System.out.println(reachable);
+		// System.out.println(visited);
+		// System.out.println(pathTo);
+		return SPT;
 	}
 	public void setInitialDistance(){
 		//System.out.println(graph.getvList().size());
@@ -68,21 +90,25 @@ public class DijkstrasSP implements ShortestPath{
 		ListIterator<Edge> allVertices =graph.geteList().listIterator();
 		while(allVertices.hasNext()){
 			Edge e = allVertices.next();
-			Vertex v = e.getOne();
-			Vertex v2 = e.getTwo();
-			if(neighbor.containsKey(v)){
-				LinkedList<Integer> cost = new LinkedList<>();
-				cost.add(v2.getId());
-				cost.add(e.getWeight());
-				neighbor.get(v).add(cost);
+			//Vertex v = e.getOne();
+			//Vertex v2 = e.getTwo();
+			if(neighbor.containsKey(e.getOne())){
+				// LinkedList<Integer> cost = new LinkedList<>();
+				// cost.add(v2.getId());
+				// cost.add(e.getWeight());
+				// neighbor.get(v).add(cost);
+				neighbor.get(e.getOne()).add(e);
 			}
 			else{
-				LinkedList<Integer> cost = new LinkedList<>();
-				LinkedList<LinkedList<Integer>> neighborList = new LinkedList<>();
-				cost.add(v2.getId());
-				cost.add(e.getWeight());
-				neighborList.add(cost);
-				neighbor.put(v, neighborList);
+				// LinkedList<Integer> cost = new LinkedList<>();
+				// LinkedList<LinkedList<Integer>> neighborList = new LinkedList<>();
+				// cost.add(v2.getId());
+				// cost.add(e.getWeight());
+				// neighborList.add(cost);
+				// neighbor.put(v, neighborList);
+				LinkedList<Edge> edgeList = new LinkedList<>();
+				edgeList.add(e);
+				neighbor.put(e.getOne(), edgeList);
 			}
 		}
 	}
