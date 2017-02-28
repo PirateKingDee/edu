@@ -5,16 +5,23 @@ public class driver{
 		Graph g = new Graph();
 		Graph graph = new Graph();
 		try{
-			graph = g.genRandomGraph(10,0.3f);
+			graph = g.genRandomGraph(4,0.3f);
 		}
 		catch(Graph.VertexAlreadyExistsException e){
 
 		}
-		DijkstrasSP dijkstra = new DijkstrasSP();
-		System.out.println("Graph:\n"+graph);
+		catch(Graph.DuplicateEdgeException e){
 
-		System.out.println("STP: \n"+dijkstra.genShortestPath(graph, graph.getvList().get(1), graph.getvList().get(6)));
-		System.out.println("Neighbor:\n"+dijkstra.getNeibors());
+		}
+		// DijkstrasSP dijkstra = new DijkstrasSP();
+		// System.out.println("Graph:\n"+graph);
+
+		// System.out.println("STP: \n"+dijkstra.genShortestPath(graph, graph.getvList().get(3), graph.getvList().get(1)));
+		// System.out.println("Neighbor:\n"+dijkstra.getNeibors());
+
+		FloydsSP floyd = new FloydsSP();
+		floyd.genShortestPath(graph, graph.getvList().get(3), graph.getvList().get(1));
+		System.out.println("Graph:\n"+graph);
 
 	}
 }
