@@ -43,4 +43,12 @@ public class Edge implements Comparable<Edge>{
 	public int compareTo(Edge that) {
 		return this.weight - that.weight;
 	}
+	@Override
+	public boolean equals(Object that)
+	{
+		if(!this.getClass().equals(that.getClass()))
+			return false;
+		
+		return ((Edge)that).one.equals(this.one) && ((Edge)that).two.equals(this.two);
+	}
 }

@@ -29,9 +29,11 @@ public class Graph {
 		return this.eList.remove(e);
 	}
 
-	public void addEdge(Edge e) throws InconsistentEdgeException {
+	public void addEdge(Edge e) throws InconsistentEdgeException, DuplicateEdgeException {
 		if (!vList.contains(e.getOne()) || !vList.contains(e.getTwo()))
 			throw new InconsistentEdgeException();
+		if (eList.contains(e))
+			throw new DuplicateEdgeException();
 
 		eList.add(e);
 	}
@@ -60,10 +62,13 @@ public class Graph {
 		return sb.toString();
 	}
 
-	// Will generate a random graph with 'size' number of verteces and density value ranging from 0 to 1.
+	// Will generate a random graph with 'size' number of verteces and density
+	// value ranging from 0 to 1.
 	// 1 contains all possible edges
-	// 0 will only contain the minimum number in order to have a connected graph.
-	public static Graph genRandomGraph(int size, float density) throws VertexAlreadyExistsException {
+	// 0 will only contain the minimum number in order to have a connected
+	// graph.
+	public static Graph genRandomGraph(int size, float density)
+			throws VertexAlreadyExistsException, DuplicateEdgeException {
 		Graph g = new Graph();
 		Random gen = new Random(System.currentTimeMillis());
 
@@ -91,6 +96,8 @@ public class Graph {
 						g.addEdge(new Edge(i, j, genRandomEdgeWeight(gen, size)));
 					} catch (InconsistentEdgeException e) {
 						continue;
+					} catch (DuplicateEdgeException e) {
+						continue;
 					}
 
 		return g;
@@ -102,7 +109,10 @@ public class Graph {
 
 	public class InconsistentEdgeException extends Throwable {
 		private static final long serialVersionUID = -5864389640379020322L;
+	}
 
+	public class DuplicateEdgeException extends Throwable {
+		private static final long serialVersionUID = 6968422280902254673L;
 	}
 
 	public class VertexAlreadyExistsException extends Throwable {
