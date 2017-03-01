@@ -5,6 +5,7 @@ import java.util.ListIterator;
 import java.util.Arrays;
 public class FloydsSP implements ShortestPath{
 	int [][] pathMatrix;
+
 	public List<Edge> genShortestPath(Graph G, Vertex source, Vertex goal){
 		initializeMatrix(G);
 		print();
@@ -13,28 +14,20 @@ public class FloydsSP implements ShortestPath{
 
 	public void initializeMatrix(Graph G){
 		pathMatrix = new int[G.getvList().size()][G.getvList().size()];
-		ListIterator<Edge> edges = G.geteList().listIterator();
-		for(int i = 0; i<pathMatrix.length; i ++){
-			for(int j = 0; j<pathMatrix.length; j++){
-				if(edges.hasNext()){
-					Edge e = edges.next();
-					if(i == j){
-						pathMatrix[i][j] = 0;
-						edges.previous();
-					}
-					else if(e.getOne().getId()==i && e.getTwo().getId()==j){
-						pathMatrix[i][j] = e.getWeight();
-					}
-					else{
-						pathMatrix[i][j] = Integer.MAX_VALUE;
-						edges.previous();
-					}
+		for(int i=0; i<pathMatrix.length; i++){
+			for(int j=0; j<pathMatrix.length; j++){
+				if(i==j){
+					pathMatrix[i][j] = 0;
 				}
-				else{
-					pathMatrix[i][j] = Integer.MAX_VALUE;
-				}	
+				else pathMatrix[i][j] = Integer.MAX_VALUE;
 			}
 		}
+		ListIterator<Edge> edges = G.geteList().listIterator();
+		while(edges.hasNext()){
+			Edge e = edges.next();
+			pathMatrix[e.getOne().getId()][e.getTwo().getId()] = e.getWeight();
+		}
+
 	}
 
 	public void print(){
