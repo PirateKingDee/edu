@@ -16,9 +16,12 @@ public class FloydsSP implements ShortestPath{
 		printDistance();
 		printPath();
 		for(int k = 0; k<vertexSize; k++){
+			System.out.println(k+" time distance: ");
+			printDistance();
 			for(int i = 0; i<vertexSize; i++){
 				for(int j = 0; j<vertexSize; j++){
-					if(distanceMatrix[i][k]+distanceMatrix[k][j]< distanceMatrix[i][j]){
+					if(i == j) continue;
+					if(distanceMatrix[i][k]!=Integer.MAX_VALUE && distanceMatrix[k][j]!=Integer.MAX_VALUE && distanceMatrix[i][k]+distanceMatrix[k][j]< distanceMatrix[i][j]){
 						distanceMatrix[i][j] = distanceMatrix[i][k]+distanceMatrix[k][j];
 						LinkedList<Edge> shortPath = new LinkedList<Edge>(pathMatrix[i][k]);
 						shortPath.addAll(pathMatrix[k][j]);
@@ -29,7 +32,7 @@ public class FloydsSP implements ShortestPath{
 		}
 		printDistance();
 		printPath();
-		return null;
+		return pathMatrix[source.getId()][goal.getId()];
 	}
 
 	public void initializeMatrix(Graph G){
