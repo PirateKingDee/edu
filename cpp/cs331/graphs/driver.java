@@ -2,28 +2,32 @@ package edu.cpp.cs331.graphs;
 import java.util.HashMap;
 public class driver{
 	public static void main(String[] args)throws Graph.InconsistentEdgeException, Graph.DuplicateEdgeException,  Graph.VertexAlreadyExistsException{
-		//Graph g = new Graph();
+		Graph g = new Graph();
 		Graph graph = new Graph();
 		graph = getGraph1();
 
-		// try{
-		// 	graph = g.genRandomGraph(10,1f);
-		// }
-		// catch(Graph.VertexAlreadyExistsException e){
-		//
-		// }
-		// catch(Graph.DuplicateEdgeException e){
-		//
-		// }
+		try{
+			graph = g.genRandomGraph(10,1f);
+		}
+		catch(Graph.VertexAlreadyExistsException e){
+
+		}
+		catch(Graph.DuplicateEdgeException e){
+
+		}
 		// DijkstrasSP dijkstra = new DijkstrasSP();
 		// System.out.println("Graph:\n"+graph);
 
 		// System.out.println("STP: \n"+dijkstra.genShortestPath(graph, graph.getvList().get(3), graph.getvList().get(1)));
 		// System.out.println("Neighbor:\n"+dijkstra.getNeibors());
 
-		FloydsSP floyd = new FloydsSP();
-		floyd.genShortestPath(graph, graph.getvList().get(3), graph.getvList().get(2));
+		// FloydsSP floyd = new FloydsSP();
+		// floyd.genShortestPath(graph, graph.getvList().get(3), graph.getvList().get(2));
+
+		PrimsMST prims = new PrimsMST();
+
 		System.out.println("Graph:\n"+graph);
+		System.out.println("MST Graph:\n"+prims.genMST(graph));
 	}
 	public static Graph getGraph1()throws Graph.DuplicateEdgeException, Graph.InconsistentEdgeException, Graph.VertexAlreadyExistsException{
 		Graph graph1 = new Graph();
