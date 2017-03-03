@@ -6,15 +6,15 @@ public class driver{
 		Graph graph = new Graph();
 		graph = getGraph1();
 
-		try{
-			graph = g.genRandomGraph(10,1f);
-		}
-		catch(Graph.VertexAlreadyExistsException e){
-
-		}
-		catch(Graph.DuplicateEdgeException e){
-
-		}
+		// try{
+		// 	graph = g.genRandomGraph(10,1f);
+		// }
+		// catch(Graph.VertexAlreadyExistsException e){
+		//
+		// }
+		// catch(Graph.DuplicateEdgeException e){
+		//
+		// }
 		// DijkstrasSP dijkstra = new DijkstrasSP();
 		// System.out.println("Graph:\n"+graph);
 
@@ -27,7 +27,8 @@ public class driver{
 		PrimsMST prims = new PrimsMST();
 
 		System.out.println("Graph:\n"+graph);
-		System.out.println("MST Graph:\n"+prims.genMST(graph));
+		//System.out.println("MST Graph:\n"+prims.genMST(graph));
+		testKruskal(getGraph1());
 	}
 	public static Graph getGraph1()throws Graph.DuplicateEdgeException, Graph.InconsistentEdgeException, Graph.VertexAlreadyExistsException{
 		Graph graph1 = new Graph();
@@ -49,5 +50,9 @@ public class driver{
 		graph1.addEdge(new Edge(v2, v3, 5));
 		graph1.addEdge(new Edge(v3, v1, 4));
 		return graph1;
+	}
+	public static void testKruskal(Graph g){
+		KruskalsMST kruskal = new KruskalsMST();
+		kruskal.genMST(g);
 	}
 }
