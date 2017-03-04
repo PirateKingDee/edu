@@ -5,6 +5,8 @@ import java.util.LinkedList;
 //import java.util.List;
 import java.util.ListIterator;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 
 public class KruskalsMST implements MinimumSpanningTree{
   HashSet<Vertex>[] sets;
@@ -18,7 +20,7 @@ public class KruskalsMST implements MinimumSpanningTree{
     ListIterator<Edge> sortedEdgeList = sortedEdge.listIterator();
     while(sortedEdgeList.hasNext()){
       Edge curEdge = sortedEdgeList.next();
-      System.out.println(curEdge);
+      //System.out.println(curEdge);
       //System.out.println("im here "+curEdge+ "set is "+sets[curEdge.getOne().getId()]+sets[curEdge.getTwo().getId()]);
       if(sets[curEdge.getOne().getId()]==null && sets[curEdge.getTwo().getId()]==null){
         HashSet<Vertex> curSet = new HashSet<>();
@@ -30,21 +32,41 @@ public class KruskalsMST implements MinimumSpanningTree{
         //System.out.println("first if");
       }
       else if(sets[curEdge.getOne().getId()]==null){
+
         sets[curEdge.getTwo().getId()].add(curEdge.getOne());
-        sets[curEdge.getOne().getId()]=sets[curEdge.getTwo().getId()];
+        //sets[curEdge.getOne().getId()]=sets[curEdge.getTwo().getId()];
+        Iterator<Vertex> v = sets[curEdge.getTwo().getId()].iterator();
+        while(v.hasNext()){
+          Vertex curVertex = v.next();
+          sets[curVertex.getId()]=sets[curEdge.getTwo().getId()];
+        }
         addEdge(curEdge, mst);
         //System.out.println("second if");
       }
       else if(sets[curEdge.getTwo().getId()]==null){
+
         sets[curEdge.getOne().getId()].add(curEdge.getTwo());
-        sets[curEdge.getTwo().getId()]=sets[curEdge.getOne().getId()];
+        //sets[curEdge.getTwo().getId()]=sets[curEdge.getOne().getId()];
+        Iterator<Vertex> v = sets[curEdge.getOne().getId()].iterator();
+        while(v.hasNext()){
+          Vertex curVertex = v.next();
+          sets[curVertex.getId()]=sets[curEdge.getOne().getId()];
+        }
         addEdge(curEdge, mst);
         // System.out.println("third if");
         // System.out.println(mst);
       }
       else if(!sets[curEdge.getOne().getId()].contains(curEdge.getTwo())){
+        // for(Vertex v : sets[curEdge.getOne().getId()]){
+        //   sets[v.getId()].addAll(sets[curEdge.getTwo().getId()]);
+        // }
         sets[curEdge.getOne().getId()].addAll(sets[curEdge.getTwo().getId()]);
-        sets[curEdge.getTwo().getId()] = sets[curEdge.getOne().getId()];
+        //sets[curEdge.getTwo().getId()] = sets[curEdge.getOne().getId()];
+        Iterator<Vertex> v = sets[curEdge.getOne().getId()].iterator();
+        while(v.hasNext()){
+          Vertex curVertex = v.next();
+          sets[curVertex.getId()]=sets[curEdge.getOne().getId()];
+        }
         addEdge(curEdge, mst);
         //System.out.println("fourth if");
       }
@@ -52,9 +74,10 @@ public class KruskalsMST implements MinimumSpanningTree{
         //System.out.println("continue if");
         continue;
       }
+      //System.out.println(sets.toArray());
     }
-    System.out.println(mst);
-    return null;
+    //System.out.println(mst);
+    return mst;
   }
   public void addEdge(Edge e, Graph g){
     try{
@@ -62,23 +85,23 @@ public class KruskalsMST implements MinimumSpanningTree{
       //System.out.println(g.getvList());
     }
     catch(Graph.VertexAlreadyExistsException v){
-      System.out.println("InconsistenEdgeExcption");
+      //System.out.println("Vertex Already Exists");
     }
     try{
       g.addVertex(e.getTwo());
     }
     catch(Graph.VertexAlreadyExistsException v){
-      System.out.println("InconsistenEdgeExcption");
+      //System.out.println("Vertex Already Exists");
     }
 
     try{
       g.addEdge(e);
     }
     catch(Graph.InconsistentEdgeException i){
-      System.out.println("InconsistenEdgeExcption");
+      //System.out.println("InconsistenEdgeExcption");
     }
     catch(Graph.DuplicateEdgeException d){
-      System.out.println("DuplicateEdgeException");
+      //System.out.println("DuplicateEdgeException");
     }
 
 
