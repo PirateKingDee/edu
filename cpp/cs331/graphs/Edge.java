@@ -1,6 +1,6 @@
 package edu.cpp.cs331.graphs;
 
-public class Edge implements Comparable<Edge>{
+public abstract class Edge implements Comparable<Edge>{
 	protected Vertex one;
 	protected Vertex two;
 	protected int weight;
@@ -35,20 +35,8 @@ public class Edge implements Comparable<Edge>{
 		this.weight = weight;
 	}
 
-	public String toString() {
-		return this.one + " <-" + this.weight + "-> " + this.two ;
-	}
-
 	@Override
 	public int compareTo(Edge that) {
 		return this.weight - that.weight;
-	}
-	@Override
-	public boolean equals(Object that)
-	{
-		if(!this.getClass().equals(that.getClass()))
-			return false;
-		
-		return ((Edge)that).one.equals(this.one) && ((Edge)that).two.equals(this.two);
 	}
 }

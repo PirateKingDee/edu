@@ -3,6 +3,7 @@ package edu.cpp.cs331.graphs;
 import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Graph {
 	protected List<Vertex> vList;
@@ -62,16 +63,8 @@ public class Graph {
 		return sb.toString();
 	}
 
-	// Will generate a random graph with 'size' number of verteces and density
-	// value ranging from 0 to 1.
-	// 1 contains all possible edges
-	// 0 will only contain the minimum number in order to have a connected
-	// graph.
-	public static Graph genRandomGraph(int size, float density)
-			throws VertexAlreadyExistsException, DuplicateEdgeException {
-		Graph g = new Graph();
-		Random gen = new Random(System.currentTimeMillis());
-
+	public static void genUndirectedHeavySpine(Graph g, int size) throws VertexAlreadyExistsException, DuplicateEdgeException
+	{
 		Vertex prev = null;
 		for (int i = 0; i < size; i++) {
 			Vertex cur = new Vertex(i);
@@ -82,18 +75,76 @@ public class Graph {
 			// connected.
 			if (prev != null)
 				try {
-					g.addEdge(new Edge(prev, cur, Integer.MAX_VALUE / size));
+					g.addEdge(new UndirectedEdge(prev, cur, Integer.MAX_VALUE / size));
 				} catch (InconsistentEdgeException e) {
 					e.printStackTrace();
 				}
 			prev = cur;
 		}
+		
+	}
+
+	public static void genDirectedHeavySpine(Graph g, int size) throws VertexAlreadyExistsException, DuplicateEdgeException
+	{
+		Vertex prev = null;
+		for (int i = 0; i < size; i++) {
+			Vertex cur = new Vertex(i);
+
+			g.addVertex(cur);
+
+			// Generate a heavy spine to the graph that guarantees the graph is
+			// connected.
+			if (prev != null)
+				try {
+					g.addEdge(new DirectedEdge(prev, cur, Integer.MAX_VALUE / size));
+					g.addEdge(new DirectedEdge(cur, prev, Integer.MAX_VALUE / size));
+				} catch (InconsistentEdgeException e) {
+					e.printStackTrace();
+				}
+			prev = cur;
+		}
+		
+	}
+	// Will generate a random graph with 'size' number of verteces and density
+	// value ranging from 0 to 1.
+	// 1 contains all possible edges
+	// 0 will only contain the minimum number in order to have a connected
+	// graph.
+	public static Graph genRandomUndirectedGraph(int size, float density)
+			throws VertexAlreadyExistsException, DuplicateEdgeException {
+		Graph g = new Graph();
+		Random gen = new Random(System.currentTimeMillis());
+		
+		genUndirectedHeavySpine(g, size);
+
+		for (int i = 0; i < size; i++)
+			for(int j = i+1; j < size; j++)
+			{
+				if (gen.nextFloat() <= density)
+					try {
+						g.addEdge(new UndirectedEdge(g.getvList().get(i), g.getvList().get(j), genRandomEdgeWeight(gen, size)));
+					} catch (InconsistentEdgeException e) {
+						continue;
+					} catch (DuplicateEdgeException e) {
+						continue;
+					}
+			}
+
+		return g;
+	}
+
+	public static Graph genRandomDirectedGraph(int size, float density)
+			throws VertexAlreadyExistsException, DuplicateEdgeException {
+		Graph g = new Graph();
+		Random gen = new Random(System.currentTimeMillis());
+		
+		genDirectedHeavySpine(g, size);
 
 		for (Vertex i : g.vList)
 			for (Vertex j : g.vList)
 				if (!i.equals(j) && gen.nextFloat() <= density)
 					try {
-						g.addEdge(new Edge(i, j, genRandomEdgeWeight(gen, size)));
+						g.addEdge(new DirectedEdge(i, j, genRandomEdgeWeight(gen, size)));
 					} catch (InconsistentEdgeException e) {
 						continue;
 					} catch (DuplicateEdgeException e) {
